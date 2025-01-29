@@ -77,6 +77,12 @@ def build_model(input_shape):
     model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
     return model
 
+
+@app.route('/')
+def home():
+    return "Flask app is running!"
+
+
 @app.route('/predict', methods=['POST']) 
 def predict():
     try:
@@ -144,4 +150,4 @@ if __name__ == '__main__':
             raise FileNotFoundError(f"CSV file '{file}' not found.")
 
     # Run the Flask app
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run( host="0.0.0.0", port=5000, debug=True)
