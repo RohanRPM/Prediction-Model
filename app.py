@@ -87,14 +87,12 @@ def home():
     return "Flask app is running!"
 
 
-@app.route('/predict', methods=['POST']) 
+@app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Log the incoming data for debugging
         data = request.get_json()
         print("Received data:", data)
 
-        # Validate the incoming data
         if not data or 'company_name' not in data or 'start_date' not in data or 'end_date' not in data:
             return jsonify({"error": "Missing required fields: company_name, start_date, end_date"}), 400
 
@@ -103,26 +101,31 @@ def predict():
         end_date = datetime.strptime(data['end_date'], '%Y-%m-%d')
 
         # Step 1: Load and preprocess data
+        print("Loading and preprocessing data...")
         processed_data, scaler = load_and_preprocess_data(company_name, start_date, end_date)
 
         # Step 2: Create rolling sequences
+        print("Creating rolling sequences...")
         window_size = 10
         X, y = create_rolling_sequences(processed_data, window_size)
 
-        # Step 3: Build and train the LSTM model
         if len(X) == 0 or len(y) == 0:
             return jsonify({"error": "Not enough data points to create sequences"}), 400
 
+        # Step 3: Build and train the LSTM model
+        print("Building and training the model...")
         model = build_model(input_shape=(X.shape[1], X.shape[2]))
-        model.fit(X, y, epochs=100, batch_size=32, verbose=1)
+        model.fit(X, y, epochs=1, batch_size=32, verbose=1)
 
         # Step 4: Make predictions
+        print("Making predictions...")
         predictions = model.predict(X)
         predictions_inverse = scaler.inverse_transform(
             np.hstack((predictions, np.zeros((predictions.shape[0], processed_data.shape[1] - 1))))
-        )[:, 0]  # Inverse scale predictions only for 'Open Price'
+        )[:, 0]
 
         # Step 5: Calculate evaluation metrics
+        print("Calculating evaluation metrics...")
         y_inverse = scaler.inverse_transform(
             np.hstack((y.reshape(-1, 1), np.zeros((y.shape[0], processed_data.shape[1] - 1))))
         )[:, 0]
@@ -131,6 +134,7 @@ def predict():
         mape = mean_absolute_percentage_error(y_inverse, predictions_inverse)
 
         # Step 6: Return results
+        print("Returning results...")
         return jsonify({
             "message": "Prediction successful",
             "metrics": {
@@ -142,10 +146,8 @@ def predict():
             "actuals": y_inverse.tolist()
         })
     except Exception as e:
-        # Log any error for debugging
         print(f"Error occurred: {e}")
         return jsonify({"error": str(e)}), 400
-
 
 if __name__ == '__main__':
     # Ensure the required CSV files are present
