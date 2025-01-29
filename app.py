@@ -115,7 +115,7 @@ def predict():
         # Step 3: Build and train the LSTM model
         print("Building and training the model...")
         model = build_model(input_shape=(X.shape[1], X.shape[2]))
-        model.fit(X, y, epochs=1, batch_size=32, verbose=1)
+        model.fit(X, y, epochs=100, batch_size=32, verbose=1)
 
         # Step 4: Make predictions
         print("Making predictions...")
