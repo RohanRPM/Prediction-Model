@@ -9,7 +9,11 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.optimizers import Adam
 from datetime import datetime
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+
+PORT = int(os.getenv("PORT", 5000))
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -150,4 +154,4 @@ if __name__ == '__main__':
             raise FileNotFoundError(f"CSV file '{file}' not found.")
 
     # Run the Flask app
-    app.run( host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
