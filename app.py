@@ -144,4 +144,4 @@ if __name__ == '__main__':
             raise FileNotFoundError(f"CSV file '{file}' not found.")
 
     # Run the Flask app
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
