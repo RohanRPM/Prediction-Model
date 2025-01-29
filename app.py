@@ -13,7 +13,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 
-PORT = int(os.getenv("PORT", 5000))
+PORT = int(os.environ.get("PORT", 10000))
 
 # Initialize Flask app
 app = Flask(__name__)
