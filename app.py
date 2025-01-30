@@ -11,12 +11,17 @@ from tensorflow.keras.optimizers import Adam
 from datetime import datetime
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+from flask_cors import CORS
+
+# app = Flask(__name__)
+
 
 
 PORT = int(os.environ.get("PORT", 10000))
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)  # Allow all origins
 
 # Define file paths for each company
 file_paths = {
